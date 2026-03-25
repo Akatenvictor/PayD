@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   LineChart,
@@ -17,6 +17,10 @@ import {
 } from 'recharts';
 import { Card } from '@stellar/design-system';
 
+// recharts v3 + React 19: Legend's class-component typings conflict with React.JSX.
+// Cast it to a plain functional component to keep TypeScript happy.
+const SafeLegend = Legend as unknown as React.FC<object>;
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface PayrollTrend {
@@ -24,15 +28,18 @@ interface PayrollTrend {
   total: number;
 }
 
+// ChartDataInput (recharts v3) requires an index signature on data entries.
 interface CurrencyShare {
   currency: string;
   value: number;
+  [key: string]: unknown;
 }
 
 interface PaymentMetric {
   month: string;
   success: number;
   failure: number;
+  [key: string]: unknown;
 }
 
 interface AnalyticsData {
@@ -40,6 +47,9 @@ interface AnalyticsData {
   currencyBreakdown: CurrencyShare[];
   paymentMetrics: PaymentMetric[];
 }
+
+// recharts v3 ValueType = number | string | Array<number | string>
+type RechartsValue = number | string | (number | string)[];
 
 // ── Mock fetch (replace with real API call when endpoint is available) ────────
 
@@ -139,10 +149,15 @@ export default function PayrollAnalytics() {
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                   <YAxis
                     tick={{ fontSize: 12 }}
-                    tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                    tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
                   />
-                  <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, 'Total']} />
-                  <Legend />
+                  <Tooltip
+                    formatter={(v: RechartsValue) => [
+                      `$${Number(Array.isArray(v) ? v[0] : (v ?? 0)).toLocaleString()}`,
+                      'Total',
+                    ]}
+                  />
+                  <SafeLegend />
                   <Line
                     type="monotone"
                     dataKey="total"
@@ -170,36 +185,45 @@ export default function PayrollAnalytics() {
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
-                    label={({ currency, value }) => `${currency} ${value}%`}
+                    label={(props: Record<string, unknown>) =>
+                      `${String(props.currency ?? '')} ${String(props.value ?? 0)}%`
+                    }
                   >
                     {data.currencyBreakdown.map((_, idx) => (
                       <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v: number) => [`${v}%`, 'Share']} />
-                  <Legend />
+                  <Tooltip
+                    formatter={(v: RechartsValue) => [
+                      `${String(Array.isArray(v) ? v[0] : (v ?? 0))}%`,
+                      'Share',
+                    ]}
+                  />
+                  <SafeLegend />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           </Card>
 
           {/* Bar chart — success/failure rate */}
-          <Card className="lg:col-span-2">
-            <div className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Payment Success / Failure Rate</h2>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={data.paymentMetrics}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="success" name="Successful" fill="#22d3ee" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="failure" name="Failed" fill="#f87171" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
+          <div className="lg:col-span-2">
+            <Card>
+              <div className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Payment Success / Failure Rate</h2>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={data.paymentMetrics}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip />
+                    <SafeLegend />
+                    <Bar dataKey="success" name="Successful" fill="#22d3ee" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="failure" name="Failed" fill="#f87171" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          </div>
         </div>
       )}
     </div>
