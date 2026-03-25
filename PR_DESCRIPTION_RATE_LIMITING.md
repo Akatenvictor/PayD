@@ -3,6 +3,8 @@
 ## Overview
 This PR implements Redis-backed API rate limiting to protect the PayD API from abuse. It utilizes the existing `RateLimitService` and `rateLimitMiddleware` to apply different limits for authentication routes versus data retrieval and general API routes.
 
+**Fixes #233**
+
 ## Changes
 - **Dependency Update**: Installed `express-rate-limit` and `rate-limit-redis` (via existing service integration).
 - **App Integration**: Integrated `authRateLimit`, `apiRateLimit`, and `dataRateLimit` middlewares into `backend/src/app.ts`.
