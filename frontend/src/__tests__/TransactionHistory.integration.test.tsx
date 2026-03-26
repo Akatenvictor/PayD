@@ -282,12 +282,12 @@ describe('TransactionHistory Integration', () => {
     );
 
     // Initially no filters active - button should just say "Filters" without count
-    const filtersButton = getByRole('button', { name: /Filters/i });
+    let filtersButton = getByRole('button', { name: /Filters/i });
     expect(filtersButton).toBeInTheDocument();
     expect(filtersButton.textContent).toMatch(/^Filters\s*$/);
 
     // Open filters
-    const filtersButton = getByRole('button', { name: /Filters/i });
+    filtersButton = getByRole('button', { name: /Filters/i });
     await user.click(filtersButton);
 
     // Add a filter
