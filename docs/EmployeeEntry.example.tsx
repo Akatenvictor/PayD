@@ -19,8 +19,7 @@ import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmployeeRemovalConfirmModal } from '@/components/EmployeeRemovalConfirmModal';
 import { EmployeeList } from '@/components/EmployeeList';
-import { notifyError, notifySuccess } from '@/utils/notifications';
-import { useAnalytics } from '@/hooks/useAnalytics';
+import { useNotification } from '@/hooks/useNotification';
 
 export interface Employee {
   id: string;
@@ -45,7 +44,7 @@ export interface Employee {
  */
 export const EmployeeEntry: React.FC = () => {
   const { t } = useTranslation();
-  const { gtag } = useAnalytics();
+  const { notifyError, notifySuccess } = useNotification();
 
   // Employee list state
   const [employees, setEmployees] = useState<Employee[]>([
@@ -93,12 +92,9 @@ export const EmployeeEntry: React.FC = () => {
       });
 
       // Track modal open event
-      gtag('event', 'employee_removal_modal_opened', {
-        employee_id: employeeId,
-        employee_name: employee.name,
-      });
+      // Note: Add gtag analytics tracking as needed in your implementation
     },
-    [employees, t, gtag]
+    [employees, t]
   );
 
   /**
@@ -141,11 +137,11 @@ export const EmployeeEntry: React.FC = () => {
         );
 
         // Track successful removal
-        gtag('event', 'employee_removed', {
-          employee_id: employeeId,
-          employee_name: employee.name,
-          timestamp: new Date().toISOString(),
-        });
+        // gtag('event', 'employee_removed', {
+        //   employee_id: employeeId,
+        //   employee_name: employee.name,
+        //   timestamp: new Date().toISOString(),
+        // });
       } catch (error) {
         const employeeError = error as Record<string, unknown>;
         const msg = (employeeError?.message as string) || 'Unknown error';
@@ -156,13 +152,13 @@ export const EmployeeEntry: React.FC = () => {
         );
 
         // Track removal failure
-        gtag('event', 'employee_removal_failed', {
-          employee_id: employeeId,
-          error: msg,
-        });
+        // gtag('event', 'employee_removal_failed', {
+        //   employee_id: employeeId,
+        //   error: msg,
+        // });
       }
     },
-    [removalModal.employee, t, gtag]
+    [removalModal.employee, t]
   );
 
   /**
@@ -171,17 +167,14 @@ export const EmployeeEntry: React.FC = () => {
   const handleCancelRemoval = useCallback(() => {
     const employee = removalModal.employee;
     if (employee) {
-      gtag('event', 'employee_removal_cancelled', {
-        employee_id: employee.id,
-        employee_name: employee.name,
-      });
+      // Note: Add gtag analytics tracking as needed in your implementation
     }
 
     setRemovalModal({
       isOpen: false,
       employee: null,
     });
-  }, [removalModal.employee, gtag]);
+  }, [removalModal.employee]);
 
   /**
    * Handler: Updates employee image
@@ -191,12 +184,9 @@ export const EmployeeEntry: React.FC = () => {
       setEmployees((prev) =>
         prev.map((emp) => (emp.id === employeeId ? { ...emp, imageUrl } : emp))
       );
-
-      gtag('event', 'employee_image_updated', {
-        employee_id: employeeId,
-      });
+      // Note: Add gtag analytics tracking as needed in your implementation
     },
-    [gtag]
+    []
   );
 
   /**
@@ -211,10 +201,11 @@ export const EmployeeEntry: React.FC = () => {
 
       setEmployees((prev) => [...prev, employee]);
 
-      gtag('event', 'employee_added', {
-        employee_id: employee.id,
-        employee_name: employee.name,
-      });
+      // Note: Add gtag analytics tracking as needed in your implementation
+      // gtag('event', 'employee_added', {
+      //   employee_id: employee.id,
+      //   employee_name: employee.name,
+      // });
 
       notifySuccess(
         t('notifications.employeeAdded', 'Employee {name} has been added', {
@@ -222,7 +213,7 @@ export const EmployeeEntry: React.FC = () => {
         })
       );
     },
-    [t, gtag]
+    [t]
   );
 
   return (

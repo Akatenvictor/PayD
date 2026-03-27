@@ -16,7 +16,7 @@
  * Issue: https://github.com/Gildado/PayD/issues/166
  */
 
-import React, { useMemo, useCallback, useRef, useEffect } from 'react';
+import React, { useMemo, useCallback, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, AlertTriangle, TrendingUp, Clock, DollarSign, Info } from 'lucide-react';
 import { Button } from '@stellar/design-system';
@@ -164,8 +164,8 @@ interface InfoTooltipProps {
 }
 
 const InfoTooltip: React.FC<InfoTooltipProps> = ({ children, tooltipText }) => {
-  const [showTooltip, setShowTooltip] = React.useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const [showTooltip, setShowTooltip] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
     timeoutRef.current = setTimeout(() => setShowTooltip(true), 300);
@@ -216,7 +216,6 @@ export const FeeEstimationConfirmModal: React.FC<FeeEstimationConfirmModalProps>
   const { t } = useTranslation();
   const { feeRecommendation, isLoading, isError, error, refetch } = useFeeEstimation();
   const modalRef = useRef<HTMLDivElement>(null);
-  const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
   // Estimate transaction count: 1 main transfer + N recipient transfers
   // We use a conservative estimate of N+1 transactions
@@ -260,13 +259,6 @@ export const FeeEstimationConfirmModal: React.FC<FeeEstimationConfirmModalProps>
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onCancel]);
-
-  // Focus management: return focus to cancel button when modal closes
-  useEffect(() => {
-    if (!isOpen && cancelButtonRef.current) {
-      cancelButtonRef.current.focus();
-    }
-  }, [isOpen]);
 
   const handleConfirm = useCallback(() => {
     onConfirm();
@@ -463,7 +455,6 @@ export const FeeEstimationConfirmModal: React.FC<FeeEstimationConfirmModalProps>
         {/* Footer/Actions */}
         <div className={styles.footer}>
           <Button
-            ref={cancelButtonRef}
             variant="secondary"
             onClick={onCancel}
             size="lg"

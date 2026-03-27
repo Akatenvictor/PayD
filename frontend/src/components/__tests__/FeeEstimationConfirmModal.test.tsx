@@ -17,7 +17,7 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
-import { FeeEstimationConfirmModal } from './FeeEstimationConfirmModal';
+import { FeeEstimationConfirmModal } from '../FeeEstimationConfirmModal';
 import * as feeEstimationHook from '../../hooks/useFeeEstimation';
 import type { FeeRecommendation } from '../../services/feeEstimation';
 
@@ -159,7 +159,7 @@ describe('FeeEstimationConfirmModal', () => {
       wrapper: Wrapper,
     });
 
-    const confirmButton = screen.getByRole('button', /confirm/i);
+    const confirmButton = screen.getByRole('button', { name: /confirm/i });
     await user.click(confirmButton);
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
@@ -171,7 +171,7 @@ describe('FeeEstimationConfirmModal', () => {
       wrapper: Wrapper,
     });
 
-    const cancelButton = screen.getByRole('button', /cancel/i);
+    const cancelButton = screen.getByRole('button', { name: /cancel/i });
     await user.click(cancelButton);
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
@@ -244,7 +244,7 @@ describe('FeeEstimationConfirmModal', () => {
 
   it('should show loading skeleton when fetching fees', () => {
     vi.spyOn(feeEstimationHook, 'useFeeEstimation').mockReturnValue({
-      feeRecommendation: null,
+      feeRecommendation: undefined,
       isLoading: true,
       isError: false,
       error: null,
@@ -259,7 +259,7 @@ describe('FeeEstimationConfirmModal', () => {
   it('should show error state when fee fetching fails', () => {
     const error = new Error('Network error');
     vi.spyOn(feeEstimationHook, 'useFeeEstimation').mockReturnValue({
-      feeRecommendation: null,
+      feeRecommendation: undefined,
       isLoading: false,
       isError: true,
       error,
@@ -276,7 +276,7 @@ describe('FeeEstimationConfirmModal', () => {
     const user = userEvent.setup();
     const refetch = vi.fn();
     vi.spyOn(feeEstimationHook, 'useFeeEstimation').mockReturnValue({
-      feeRecommendation: null,
+      feeRecommendation: undefined,
       isLoading: false,
       isError: true,
       error: new Error('Network error'),
@@ -285,14 +285,14 @@ describe('FeeEstimationConfirmModal', () => {
     });
 
     render(<FeeEstimationConfirmModal {...defaultProps} />, { wrapper: Wrapper });
-    const retryButton = screen.getByRole('button', /retry/i);
+    const retryButton = screen.getByRole('button', { name: /retry/i });
     await user.click(retryButton);
     expect(refetch).toHaveBeenCalled();
   });
 
   it('should disable confirm button when loading', () => {
     vi.spyOn(feeEstimationHook, 'useFeeEstimation').mockReturnValue({
-      feeRecommendation: null,
+      feeRecommendation: undefined,
       isLoading: true,
       isError: false,
       error: null,
@@ -301,13 +301,13 @@ describe('FeeEstimationConfirmModal', () => {
     });
 
     render(<FeeEstimationConfirmModal {...defaultProps} />, { wrapper: Wrapper });
-    const confirmButton = screen.getByRole('button', /confirm/i);
+    const confirmButton = screen.getByRole('button', { name: /confirm/i });
     expect(confirmButton).toBeDisabled();
   });
 
   it('should disable confirm button when error occurs', () => {
     vi.spyOn(feeEstimationHook, 'useFeeEstimation').mockReturnValue({
-      feeRecommendation: null,
+      feeRecommendation: undefined,
       isLoading: false,
       isError: true,
       error: new Error('Failed'),
@@ -316,7 +316,7 @@ describe('FeeEstimationConfirmModal', () => {
     });
 
     render(<FeeEstimationConfirmModal {...defaultProps} />, { wrapper: Wrapper });
-    const confirmButton = screen.getByRole('button', /confirm/i);
+    const confirmButton = screen.getByRole('button', { name: /confirm/i });
     expect(confirmButton).toBeDisabled();
   });
 
@@ -369,14 +369,14 @@ describe('FeeEstimationConfirmModal', () => {
     render(<FeeEstimationConfirmModal {...defaultProps} confirmLabel="Pay Now" />, {
       wrapper: Wrapper,
     });
-    expect(screen.getByRole('button', /pay now/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /pay now/i })).toBeInTheDocument();
   });
 
   it('should use custom cancel label', () => {
     render(<FeeEstimationConfirmModal {...defaultProps} cancelLabel="Go Back" />, {
       wrapper: Wrapper,
     });
-    expect(screen.getByRole('button', /go back/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /go back/i })).toBeInTheDocument();
   });
 
   // ─────────────────────────────────────────────────────────────────────────
