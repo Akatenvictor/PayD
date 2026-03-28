@@ -52,206 +52,28 @@ PayD utilizes Stellar's asset issuance capabilities to create organization-speci
 
 ### Example Asset: ORGUSD
 
-- **Issuer Account**: Controlled by the organization
-- **Backing**: 1:1 with USD (or other stable currencies)
-- **Distribution**: Through organization's distribution account
-- **Trustlines**: Employees must accept the asset to receive payments
+- **Issuer Account**: Controlled by the organiza
 
-### Stellar Concepts Employed
+---
 
-- **Asset Issuance**: Creating custom tokens for payroll
-- **Distribution Accounts**: Managing bulk payments
-- **Trustlines**: Employee wallet acceptance
-- **Anchors**: Local currency conversion
-- **Fast Settlement**: Sub-5 second transaction finality
+## 📚 Contribution Reward (Bounty) Program
 
-## ⚙️ Core Features
+We value community contributions! High‑priority issues may carry a bounty to recognize and reward contributors.
 
-### 1️⃣ Employer Dashboard
+### Eligible Contributions
+- **Bug fixes** for critical bugs affecting core payroll flows.
+- **Feature implementations** that align with the roadmap and have been approved as high priority.
+- **Documentation improvements** that significantly enhance onboarding or user guidance for bounty‑eligible issues.
 
-- **Employee Management**: Add/remove employees with wallet addresses
-- **Salary Configuration**: Set amounts, frequencies (weekly/monthly)
-- **Bulk Upload**: CSV import for payroll lists
-- **Payment Scheduling**: Automated recurring payments
-- **Analytics**: Payroll history, total costs, FX tracking
+### Claim Process
+1. **Work on an issue** labeled with the `bounty` tag.
+2. **Submit a pull request** that resolves the issue and passes all CI checks.
+3. **Add a comment** on the issue with the PR link, stating you are claiming the bounty.
+4. **Project maintainers** will review the contribution. If approved, the reward will be transferred via the project's Stellar wallet.
 
-### 2️⃣ Employee Portal
+### Reward Details
+- Rewards are paid in **XLM** (Stellar Lumens) or a stable asset of the project's choosing.
+- Amounts vary per issue and are defined in the issue description.
+- Payments are processed within 7 business days after PR merge.
 
-- **Salary Tracking**: View incoming payments
-- **Transaction History**: Complete on-chain records
-- **Balance Management**: Asset balances and values
-- **Withdrawal Options**: Multiple anchor services
-- **Wallet Integration**: QR codes for easy setup
-
-### 3️⃣ Payroll Engine (Backend)
-
-**Automated Payment Flow:**
-
-1. Checks scheduled payments at designated times
-2. Verifies employer account balance and authorization
-3. Signs and submits Stellar transactions
-4. Processes bulk payments efficiently
-5. Logs all transactions in database
-6. Sends notifications to employees
-
-### 4️⃣ FX & Conversion System
-
-- **Real-time Rates**: Live asset-to-fiat conversion (see our [FX Rate Fetching Logic](docs/FX_RATE_FETCHING_LOGIC.md) for details on fallback and caching architecture).
-- **Anchor Fees**: Transparent withdrawal costs
-- **Network Fees**: Minimal Stellar transaction fees
-- **Multi-currency Support**: Support for various local currencies
-
-### 5️⃣ Transparency & Auditability
-
-Every payment includes:
-
-- **Transaction Hash**: Unique Stellar transaction ID
-- **Timestamp**: Exact payment time
-- **On-chain Verification**: Public ledger proof
-- **Audit Trail**: Complete payment history
-
-## 🛠 Tech Stack
-
-### Frontend
-
-- **React 19** - Modern UI framework
-- **TypeScript** - Type-safe development
-### Backend
-
-- **Node.js** - Runtime environment
-- **Express.js** - API framework
-- **Stellar SDK** - Blockchain integration
-- **PostgreSQL** - Data persistence
-- **Redis** - Caching and session management
-
-### Blockchain
-
-- **Stellar Network** - Primary blockchain
-- **Soroban** - Smart contracts including:
-  - **Bulk Payment**: Efficiently distribute funds to multiple recipients.
-  - **Revenue Split**: Automate the division of incoming payments.
-  - **Vesting Escrow**: Lock and gradually release tokens over time.
-  - **Cross-Asset Payment**: Seamlessly convert assets during payments.
-  - **Asset Path Payment**: Advanced routing for payments across different assets.
-- **Stellar Wallets Kit** - Wallet integration
-
-### DevOps
-
-- **Docker** - Containerization
-- **GitHub Actions** - CI/CD pipelines
-- **ESLint + Prettier** - Code quality
-- **Husky** - Git hooks
-
-## 🚀 Quick Start
-
-Start PayD locally in three steps:
-
-1. **Clone and enter the repo**
-   ```bash
-   git clone https://github.com/Gildado/PayD.git
-   cd PayD
-   ```
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-3. **Create your local environment and start the app**
-   ```bash
-   cp .env.example .env
-   npm run dev
-   ```
-
-Need the full setup? Keep reading for prerequisites, environment variables, and database setup.
-
-For cloud hosting instructions, see the deployment guide:
-
-- [Vercel + Render Deployment Guide](docs/DEPLOYMENT_GUIDE_VERCEL_RENDER.md)
-- [Staging Environment Known Issues](docs/STAGING_ISSUES.md)
-
-## Getting Started
-
-### Prerequisites
-
-Ensure you have the following installed:
-
-- **Node.js** v22+
-- **npm** or **yarn**
-- **Rust** (for Soroban contracts)
-- **Stellar CLI**
-- **Docker** (optional, for local development)
-
-### Installation
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/Gildado/PayD.git
-   cd PayD
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-3. **Environment Setup:**
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   _Edit `.env` with your configuration._
-
-4. **Database Setup:**
-   ```bash
-   # Using Docker
-   docker run --name payd-postgres -e POSTGRES_PASSWORD=mypassword -p 5432:5432 -d postgres:15
-   ```
-   _Or set up PostgreSQL manually._
-
-### Configuration
-
-Edit `.env` with the following key variables:
-
-```env
-# Stellar Network
-STELLAR_NETWORK=testnet # or mainnet
-STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
-
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/payd
-
-# API Keys
-STELLAR_SECRET_KEY=your_issuer_secret_key
-ANCHOR_API_KEY=your_anchor_service_key
-
-# JWT
-JWT_SECRET=your_jwt_secret
-```
-
-### Development
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Build for production:
-
-```bash
-npm run build
-```
-
-Run tests:
-
-```bash
-npm run test
-```
-
-## 🙌 Contributors
-
-We'd like to extend a huge thank you to everyone who has contributed to making PayD what it is today! For a full list of our amazing contributors, please see our [Contributors List](CONTRIBUTORS.md).
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
+For more details, see the [CONTRIBUTION_REWARD.md](CONTRIBUTION_REWARD.md) file.
