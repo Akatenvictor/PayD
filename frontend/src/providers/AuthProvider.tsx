@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 interface User {
   id: string;
@@ -22,16 +22,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_KEY = 'payd_auth_token';
 
+interface JwtPayload {
+  sub?: string;
+  id?: string;
+  email?: string;
+  name?: string;
+  role?: string;
+  picture?: string;
+}
+
 function decodeJwtPayload(token: string): User | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3 || !parts[1]) return null;
-    const payload = JSON.parse(atob(parts[1]));
+    const decoded = atob(parts[1]);
+    const payload = JSON.parse(decoded) as JwtPayload;
     return {
-      id: payload.sub || payload.id || '',
-      email: payload.email || '',
-      name: payload.name || '',
-      role: payload.role || 'EMPLOYEE',
+      id: payload.sub ?? payload.id ?? '',
+      email: payload.email ?? '',
+      name: payload.name ?? '',
+      role: (payload.role === 'EMPLOYER' || payload.role === 'EMPLOYEE') ? payload.role : 'EMPLOYEE',
       picture: payload.picture,
     };
   } catch {
@@ -80,25 +90,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        isAuthenticated: !!token && !!user,
-        isLoading,
-        login,
-        logout,
-        setTokenFromCallback,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value: AuthContextType = {
+    user,
+    token,
+    isAuthenticated: !!token && !!user,
+    isLoading,
+    login,
+    logout,
+    setTokenFromCallback,
+  };
+
+  return <AuthContext value={value}>{children}</AuthContext>;
 }
 
 export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

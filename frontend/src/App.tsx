@@ -25,6 +25,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { useTranslation } from 'react-i18next';
 import { contractService } from './services/contracts';
 
+function noop(): void {
+  // intentional no-op for ErrorFallback onReset when no reset handler is needed
+}
+
 function App() {
   const { t } = useTranslation();
 
@@ -62,7 +66,7 @@ function App() {
           <Route
             path="/settings"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <Settings />
               </ErrorBoundary>
             }
@@ -70,7 +74,7 @@ function App() {
           <Route
             path="/help"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <HelpCenter />
               </ErrorBoundary>
             }
@@ -78,7 +82,7 @@ function App() {
           <Route
             path="/transactions"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <TransactionHistory />
               </ErrorBoundary>
             }
@@ -158,7 +162,7 @@ function App() {
           <Route
             path="/cross-asset-payment"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <CrossAssetPayment />
               </ErrorBoundary>
             }
@@ -166,7 +170,7 @@ function App() {
           <Route
             path="/revenue-split"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <RevenueSplitDashboard />
               </ErrorBoundary>
             }
@@ -277,7 +281,7 @@ function App() {
           <Route
             path="cross-asset-payment"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <CrossAssetPayment />
               </ErrorBoundary>
             }
@@ -285,7 +289,7 @@ function App() {
           <Route
             path="transactions"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <TransactionHistory />
               </ErrorBoundary>
             }
@@ -293,7 +297,7 @@ function App() {
           <Route
             path="revenue-split"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <RevenueSplitDashboard />
               </ErrorBoundary>
             }
@@ -317,7 +321,7 @@ function App() {
           <Route
             path="settings"
             element={
-              <ErrorBoundary fallback={<ErrorFallback onReset={() => {}} />}>
+              <ErrorBoundary fallback={<ErrorFallback onReset={noop} />}>
                 <Settings />
               </ErrorBoundary>
             }
